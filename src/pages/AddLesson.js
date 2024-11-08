@@ -5,10 +5,10 @@ import port from '../BackendConfig';
 
 const AddLesson = () => {
   const token = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).token: null;
-  console.log(token);
   const [grades, setGrades] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [formValues, setFormValues] = useState({ title: '', grade_id: '', courseName: '', video_url: '', pdf_url: '', isVisible: true });
+  const [lessons, setLessons] = useState([]);
+  const [formValues, setFormValues] = useState({ grade_id: '', lesson_id: '', video_url: '', pdf_url: ''});
   const [alert, setAlert] = useState({ message: '', type: '' });
 
   useEffect(() => {
@@ -42,11 +42,30 @@ const AddLesson = () => {
       .catch(err => console.log(err));
   }
 
+  const getLessons = (courseId) => {
+    fetch(`${port}/admin/lessonsbycourse/${courseId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        setLessons(data);
+      })
+      .catch(err => console.log(err));
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
     if (name === 'grade_id') {
       getCourses(value);
+    }
+    if (name === 'course_id') {
+      getLessons(value);
     }
   };
 
@@ -55,8 +74,8 @@ const AddLesson = () => {
     console.log(formValues);
     console.log(token);
     try {
-      const response = await fetch(`${port}/admin/addlesson`, {
-        method: 'POST',
+      const response = await fetch(`${port}/admin/addvideo`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -66,7 +85,7 @@ const AddLesson = () => {
       console.log(response);
       if (response.ok) {
         console.log('Lesson added successfully');
-        setAlert({ message: 'تمت إضافة الدرس بنجاح', type: 'success' });
+        setAlert({ message: 'تمت إضافة الشرح بنجاح', type: 'success' });
         } else {
         console.log('Failed to add lesson');
         }
@@ -80,18 +99,8 @@ const AddLesson = () => {
   return (
     <div className="add-admin">
     {alert.message && <CustomAlert message={alert.message} type={alert.type} />}
-      <h1>إضافة درس</h1>
+      <h1>إضافة شرح</h1>
       <form onSubmit={handleSubmit} className="add-admin-form">
-        <div className="form-group">
-          <label>عنوان الدرس:</label>
-          <input
-            type="text"
-            name="title"
-            value={formValues.title}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
         <div className="form-group">
           <label>المرحلة:</label>
           <select
@@ -109,14 +118,28 @@ const AddLesson = () => {
         <div className="form-group">
           <label>الكورس:</label>
           <select
-            name="courseName"
+            name="course_id"
             value={formValues.courseName}
             onChange={handleInputChange}
             required
           >
             <option value="">اختر الكورس</option>
             {courses.map((course) => (
-              <option key={course._id} value={course.name}>{course.name}</option>
+              <option key={course._id} value={course._id}>{course.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>الدرس:</label>
+          <select
+            name="lesson_id"
+            value={formValues.courseName}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">اختر الدرس</option>
+            {lessons.map((lesson) => (
+              <option key={lesson._id} value={lesson._id}>{lesson.title}</option>
             ))}
           </select>
         </div>
@@ -138,18 +161,6 @@ const AddLesson = () => {
             value={formValues.pdf_url}
             onChange={handleInputChange}
           />
-        </div>
-        <div className="form-group">
-          <label>متاح للطلاب؟</label>
-          <select
-            name="isVisible"
-            value={formValues.isVisible}
-            onChange={handleInputChange}
-            required
-          >
-            <option value={true}>متاح</option>
-            <option value={false}>غير متاح</option>
-          </select>
         </div>
         <button type="submit" className="submit-button">إضافة</button>
       </form>

@@ -9,7 +9,7 @@ import port from '../BackendConfig';
 const Login = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [alert, setAlert] = useState({ message: '', type: '' });
-  const expirationTime = new Date(new Date().getTime() + 3600000);
+  const expirationTime = new Date(new Date().getTime() + 10800000);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

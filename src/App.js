@@ -23,12 +23,14 @@ import Course from "./pages/Course";
 
 const App = () => {
     const [loading, setLoading] = useState(true);
-    const user = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).user: null;
+    // const user = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).user: null;
+    const user = useSelector((state) => state.auth.user);
     const isAuthenticated = user? true: false;
-    const token = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).token: null;
+    // const token = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).token: null;
     // console.log(isAuthenticated, token);
     // console.log(user);
-  // const token = useSelector((state) => state.auth.token);
+  const token = useSelector((state) => state.auth.token);
+  console.log("logging store data: ", useSelector((state) => state.auth.user))
   // console.log(user, isAuthenticated, token);
   useEffect(() => {
     setTimeout(() => {

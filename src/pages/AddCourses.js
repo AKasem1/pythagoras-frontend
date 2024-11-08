@@ -6,9 +6,11 @@ import port from '../BackendConfig';
 const AddCourses = () => {
     const token = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).token: null;
     const [grades, setGrades] = useState([]);
-    const [isAddGrade, setIsAddGrade] = useState(true);
+    const [option, setOption] = useState('grade');
     const [alert, setAlert] = useState({ message: '', type: '' });
     const [courses, setCourses] = useState([{name: '', imgURL: '', grade: '', price: 0}]);
+    const [lessons, setLessons] = useState({ title: '', grade_id: '', courseName: '', isVisible: true });
+    const [fetchedCourses, setFetchedCourses] = useState([]);
     const [imageUrl, setImageUrl] = useState('');
     const [uploading, setUploading] = useState(false);
     const key = '94a510085448090374c9c304d4af9503';
@@ -30,9 +32,17 @@ const AddCourses = () => {
     }, [token]);
 
     const handleToggle = (formType) => {
-        setIsAddGrade(formType === 'grade');
+        setOption(formType);
         setAlert({ message: '', type: '' });
     };
+
+    const handleLessonChange = (e) => {
+        const { name, value } = e.target;
+            setLessons({ ...lessons, [name]: value });
+        if (name === 'grade_id') {
+          getCourses(value);
+        }
+      };
 
     const addGrade = async (e) => {
         e.preventDefault();
@@ -55,6 +65,32 @@ const AddCourses = () => {
             console.log(data);
         } catch (error) {
             console.error("error: ", error.message);
+        }
+    }
+
+    const addLesson = async (e) => {
+        e.preventDefault();
+        console.log(lessons);
+        try {
+        const response = await fetch(`${port}/admin/addlesson`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(lessons),
+        });
+        console.log(response);
+        if (response.ok) {
+            console.log('Lesson added successfully');
+            setAlert({ message: 'تمت إضافة الدرس بنجاح', type: 'success' });
+            } else {
+            console.log('Failed to add lesson');
+            }
+        }
+        catch (error) {
+        console.error(error.message);
+        setAlert({ message: error.message, type: 'error' });
         }
     }
 
@@ -135,74 +171,178 @@ const AddCourses = () => {
         setCourses([...courses, {name: '', grades: []}]);
         console.log(courses);
     }
+
+    const getCourses = (gradeId) => {
+        fetch(`${port}/admin/coursesbygrade/${gradeId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+          .then(res => res.json())
+          .then(data => {
+            setFetchedCourses(data);
+          })
+          .catch(err => console.log(err));
+      }
     
     return (
         <div className="course-container">
             <div className="button-container">
                 <button
-                    className={`toggle-button ${isAddGrade ? 'active' : ''}`}
+                    className={`toggle-button ${option == 'grade' ? 'active' : ''}`}
                     onClick={() => handleToggle('grade')}
                 >
                     إضافة مرحلة
                 </button>
                 <div className="divider"></div>
                 <button
-                    className={`toggle-button ${!isAddGrade ? 'active' : ''}`}
+                    className={`toggle-button ${option == 'course' ? 'active' : ''}`}
                     onClick={() => handleToggle('course')}
                 >
                     إضافة كورسات
                 </button>
+                <div className="divider"></div>
+                <button
+                    className={`toggle-button ${option == 'lesson' ? 'active' : ''}`}
+                    onClick={() => handleToggle('lesson')}
+                >
+                    إضافة دروس
+                </button>
             </div>
-            {alert.message && <CustomAlert message={alert.message} type={alert.type} />}
-            <div className="form-container">
-                {isAddGrade ? (
-                    <form className="form add-grade-form" onSubmit={addGrade}>
-                        <h2 className="form-heading">إضافة مرحلة</h2>
+        {alert.message && <CustomAlert message={alert.message} type={alert.type} />}
+        <div className="form-container">
+            {option === 'grade' && (
+            <form className="form add-grade-form" onSubmit={addGrade}>
+                <h2 className="form-heading">إضافة مرحلة</h2>
+                <label className="form-label">
+                    اسم المرحلة:
+                    <input type="text" name="gradeName" className="form-input-courses" />
+                </label>
+                <button type="submit" className="submit-button">إضافة</button>
+            </form>
+        )}
+        {option === 'course' && (
+            <form className="add-course-form" onSubmit={AddCourse}>
+                <h2 className="form-heading">إضافة كورسات</h2>
+                {courses.map((course, index) => (
+                    <div key={index}>
                         <label className="form-label">
-                            اسم المرحلة:
-                            <input type="text" name="gradeName" className="form-input-courses" />
+                            اسم الكورس:
+                            <input type="text" name="name" className="form-input" onChange={handleInputChange} required />
                         </label>
-                        <button type="submit" className="submit-button">إضافة</button>
-                    </form>
-                ) : (
-                    
-                        <form className="add-course-form" onSubmit={AddCourse}>
-                            <h2 className="form-heading">إضافة كورسات</h2>
-                            {courses.map((course, index) => (
-                            <div key={index}>
-                            <label className="form-label">
-                                اسم الكورس:
-                                <input type="text" name="name" className="form-input" onChange={handleInputChange} required />
-                            </label>
-                            <label className="form-label">
-                                صورة الكورس:
-                                <input type="file" onChange={handleImageChange} className='imgUpload'/>
-                                {uploading ? 'Uploading...' : ''}
-                            </label>
-                            <label className="form-label">
-                                        <select name="grade" onChange={handleInputChange} className="form-select">
-                                            <option value="">اختر المرحلة</option>
-                                        {grades.map((grade) => (
-                                                <option key={grade._id} value={grade.name}>
-                                                    {grade.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                            </label>
-                            <label className="form-label">
-                                السعر:
-                                <input type="number" name="price" className="form-input" onChange={handleInputChange} required />
-                            </label>
-                            </div>
+                        <label className="form-label">
+                            صورة الكورس:
+                            <input type="file" onChange={handleImageChange} className='imgUpload'/>
+                            {uploading ? 'Uploading...' : ''}
+                        </label>
+                        <label className="form-label">
+                            <select name="grade" onChange={handleInputChange} className="form-select">
+                                <option value="">اختر المرحلة</option>
+                                {grades.map((grade) => (
+                                    <option key={grade._id} value={grade.name}>
+                                        {grade.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        <label className="form-label">
+                            السعر:
+                            <input type="number" name="price" className="form-input" onChange={handleInputChange} required />
+                        </label>
+                    </div>
                 ))}
-                            <div className='buttons'>
-                            <button type="button" className="add-button" onClick={handleAddButton}>+</button>
-                            <button type="submit" className="submit-lesson-button">إضافة</button>
-                            </div>
-                        </form>
-                )}
-            </div>
+                <div className='buttons'>
+                    <button type="button" className="add-button" onClick={handleAddButton}>+</button>
+                    <button type="submit" className="submit-lesson-button">إضافة</button>
+                </div>
+            </form>
+        )}
+        {option === 'lesson' && (
+        <div className="add-admin">
+        <form onSubmit={addLesson} className="add-lesson-form">
+        <h2 className="form-heading">إضافة دروس</h2>
+        <div className="form-group">
+          <label className="form-label">عنوان الدرس:</label>
+          <input
+            type="text"
+            name="title"
+            value={lessons.title}
+            onChange={handleLessonChange}
+            required
+            className="form-input"
+          />
         </div>
+        <div className="form-group">
+          <label className="form-label">المرحلة:</label>
+          <select
+            name="grade_id"
+            value={lessons.grade_id}
+            onChange={handleLessonChange}
+            required
+            className="form-select"
+          >
+            <option value="">اختر المرحلة</option>
+            {grades.map((grade) => (
+              <option key={grade._id} value={grade._id}>{grade.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label">الكورس:</label>
+          <select
+            name="courseName"
+            value={lessons.courseName}
+            onChange={handleLessonChange}
+            required
+            className="form-select"
+          >
+            <option value="">اختر الكورس</option>
+            {fetchedCourses.map((course) => (
+              <option key={course._id} value={course.name}>{course.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label"> رابط الفيديو (اختياري):</label>
+          <input
+            type="url"
+            name="video_url"
+            value={lessons.video_url}
+            onChange={handleLessonChange}
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">رابط PDF (اختياري):</label>
+          <input
+            type="url"
+            name="pdf_url"
+            value={lessons.pdf_url}
+            onChange={handleLessonChange}
+            className="form-input"
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">متاح للطلاب؟</label>
+          <select
+            name="isVisible"
+            value={lessons.isVisible}
+            onChange={handleLessonChange}
+            required
+            className="form-select"
+          >
+            <option value={true}>متاح</option>
+            <option value={false}>غير متاح</option>
+          </select>
+        </div>
+        <button type="submit" className="submit-button">إضافة</button>
+        </form>
+        </div>
+        )}
+    </div>
+    </div>
     );
 };
 

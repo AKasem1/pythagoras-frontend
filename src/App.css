@@ -327,7 +327,7 @@ from, to { border-color: transparent;
 /* Media Query for iPhone 13 Pro Max */
 @media only screen and (max-width: 430px) {
   .header {
-    flex-direction: column;
+    flex-direction: row;
     padding: 10px 20px;
   }
 
@@ -336,7 +336,7 @@ from, to { border-color: transparent;
   }
 
   .nav {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
   }
@@ -817,8 +817,77 @@ button.submitbutton:hover {
 .pricing-section {
   display: flex;
   flex-wrap: wrap; 
-  gap: 20px;
+  gap: 10px;
   margin: 20px 0;
+}
+
+/* course-card Styles */
+.course-card {
+  border-radius: 10px;
+  border:  1px solid #ff4500;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Rubik', sans-serif;
+  overflow: hidden;
+  width: calc(33.333% - 40px);
+  margin: 20px;
+  text-align: center;
+  box-sizing: border-box; 
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Header Styles */
+.course-card-header {
+  background-color: #ff4500;
+  color: white;
+  padding: 10px;
+  font-size: 1.2em;
+}
+.course-card .thumb img{
+  object-fit: cover;
+  width: 100%;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+.course-card-body{
+  margin-bottom: 20px;
+}
+
+.course-card-body h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.course-card-body p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* List Styles */
+.specialties-list {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 20px;
+  padding: 0 20px 15px 20px; 
+  /* top right bottom left */
+}
+
+.specialties-list li {
+  font-size: 1.2em;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Checkmark Styles */
+.checkmark {
+  font-size: 1.2em;
+  color: #028085;
 }
 
 /* Styling for each pricing package */
@@ -1001,7 +1070,9 @@ button.submitbutton:hover {
 
 .sidebar .nav ul li {
   margin-bottom: 10px;
-  width: 100%;
+  width: 118%;
+  padding-right: 10px;
+
 }
 
 .sidebar .nav ul li a {
@@ -1016,11 +1087,10 @@ button.submitbutton:hover {
   margin-top: 10px;
 }
 
-
 .sidebar .nav ul li.active,
 .sidebar .nav ul li:hover {
   background-color: #ff4500;
-  width: 100%;
+  width: 118%;
 }
 
 .sidebar .devices {
@@ -1130,10 +1200,10 @@ button.submitbutton:hover {
 
 .card {
   background-color: white;
-  padding: 20px;
-  border-radius: 8px;
+  /* padding: 20px;
+  border-radius: 8px; */
   width: 30%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .card h3 {
@@ -1297,7 +1367,7 @@ button.submitbutton:hover {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 60%;
+  width: 70%;
   margin: 0 auto;
 }
 .add-admin h1 {
@@ -1330,6 +1400,28 @@ button.submitbutton:hover {
   border-radius: 5px;
 }
 
+.add-lesson-form .form-group {
+  margin-left: 180px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.add-lesson-form label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.add-lesson-form input,
+.add-lesson-form select {
+  text-align: right;
+  width: 200%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
 .button-container {
   display: flex;
@@ -2405,7 +2497,6 @@ input[type="file"]::file-selector-button:active {
 }
 
 .courseCard-image {
-  width: 150px;
   height: 150px;
   object-fit:fill;
   border-radius: 6px;
@@ -2573,4 +2664,136 @@ input[type="file"]::file-selector-button:active {
 }
 .solve-quiz:hover, .download-file:hover {
   background-color: #028085;
+}
+
+.code-management-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.generate-section {
+  margin-bottom: 20px;
+  width: 100%;
+  align-items: center;
+  justify-content:flex-start;
+  justify-items: auto;
+}
+
+.generate-section form {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.generate-form-group {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  
+}
+
+.label {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.dropdown, .input-field {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  margin-top: 0px;
+}
+
+.generate-button {
+  padding: 6px;
+  background-color: #028085;
+  color: white;
+  width: 12%;
+  margin-top: 30px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.generate-button:hover {
+  background-color: #026b6d;
+}
+
+.table-section {
+  width: 100%;
+}
+
+.filters {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.filter-input {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 150px;
+}
+
+.search-button {
+  padding: 8px 16px;
+  background-color: #ff4500;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #028085;
+}
+.excel-download-button {
+  padding: 8px 16px;
+  display: flex;
+  justify-content: center;
+  justify-self: center;
+  align-items: center;
+  background-color: #00bd29;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.excel-icon{
+  font-size: 20px;
+}
+
+.excel-download-button:hover {
+  background-color: #005713;
+}
+
+.code-table {
+  width: 100%;
+  border-collapse: collapse;
+  direction: rtl; /* Set direction for RTL layout */
+}
+
+.code-table th, .code-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: right;
+}
+
+.code-table th {
+  background-color: #028085;
+  color: white;
+}
+
+.code-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
 }

@@ -13,7 +13,9 @@ import { MdOutlinePostAdd } from "react-icons/md";
 import { TiUserAdd } from "react-icons/ti";
 import { MdAddToQueue } from "react-icons/md";
 import { GrTransaction } from "react-icons/gr";
+import { FaQrcode } from "react-icons/fa";
 import port from '../BackendConfig';
+import CourseCodes from './CourseCodes';
 
 
 const Dashboard = () => {
@@ -60,24 +62,33 @@ const Dashboard = () => {
         </div>
         <nav className="nav">
           <ul>
-            <li className={`flex ${page === 1 ? 'active' : ''}`}><a href="#" onClick={() => setPage(1)}>Dashboard</a>
-            <MdDashboard  className='dashboard-icon'/>
+            <li className={`flex ${page === 1 ? 'active' : ''}`}>
+              <MdDashboard  className='dashboard-icon'/>
+              <a href="#" onClick={() => setPage(1)}>Dashboard</a>
             </li>
-            <li className={`flex ${page === 2 ? 'active' : ''}`}><a href="#" onClick={() => setPage(2)}>إضافة درس</a>
-            <MdAddToQueue className='dashboard-icon'/>
+            <li className={`flex ${page === 2 ? 'active' : ''}`}>
+              <MdAddToQueue className='dashboard-icon'/>
+              <a href="#" onClick={() => setPage(2)}>إضافة شرح</a>
             </li>
-            <li className={`flex ${page === 3 ? 'active' : ''}`}><a href="#" onClick={() => setPage(3)}>إضافة كويز</a>
-            <MdOutlinePostAdd className='dashboard-icon'/>
+            <li className={`flex ${page === 3 ? 'active' : ''}`}>
+              <MdOutlinePostAdd className='dashboard-icon'/>
+              <a href="#" onClick={() => setPage(3)}>إضافة كويز</a>
             </li>
             <li className={`flex ${page === 4 ? 'active' : ''}`}>
-            <a href="#" onClick={() => setPage(4)}>إضافة أدمن</a>
-            <TiUserAdd className='dashboard-icon'/>
+              <TiUserAdd className='dashboard-icon'/>
+              <a href="#" onClick={() => setPage(4)}>إضافة أدمن</a>
             </li>
-            <li className={`flex ${page === 5 ? 'active' : ''}`}><a href="#" onClick={() => setPage(5)}>حسابات الطلبة</a>
-            <GrTransaction className='dashboard-icon'/>
+              <li className={`flex ${page === 5 ? 'active' : ''}`}>
+                <GrTransaction className='dashboard-icon'/>
+                <a href="#" onClick={() => setPage(5)}>حسابات الطلبة</a>
             </li>
-            <li className={`flex ${page === 6 ? 'active' : ''}`}><a href="#" onClick={() => setPage(6)}>إضافة مراحل وكورسات</a>
-            <MdAddToQueue className='dashboard-icon'/>
+              <li className={`flex ${page === 6 ? 'active' : ''}`}>
+                <MdAddToQueue className='dashboard-icon'/>
+                <a href="#" onClick={() => setPage(6)}>إضافة مراحل وكورسات</a>
+            </li>
+            <li className={`flex ${page === 7 ? 'active' : ''}`}>
+              <FaQrcode className='dashboard-icon'/>
+              <a href="#" onClick={() => setPage(7)}>أكواد كورسات</a>
             </li>
           </ul>
         </nav>
@@ -156,6 +167,11 @@ const Dashboard = () => {
         { page === 6 && (
           <>
             <AddCourses />
+          </>
+        )}
+        { page === 7 && (
+          <>
+            <CourseCodes />
           </>
         )}
 

@@ -2,20 +2,22 @@ import React, { useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import port from '../BackendConfig';
+import CustomAlert from '../components/CustomAlert';
 
 const InvoiceTable = () => {
   const { courseId } = useParams();
   console.log("courseId:", courseId);
-  const [course, setCourse] = useState({ name: '', grade: { name: '' }, price: 0 });
+  const [lessons, setLessons] = useState([])
+  const [grade, setGrade] = useState("")
+  const [price, setPrice] = useState()
+  const [alert, setAlert] = useState({ message: '', type: '' });
   const token = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).token: null;
   const user = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).user: null;
   const name = user? user.name: 'Guest';
-  console.log("name:", name);
 
   useEffect(() => {
-    console.log("Hi");
     const fetchCourse = async () => {
-      const response = await fetch(`${port}/user/coursebyid/${courseId}`, {
+      const response = await fetch(`${port}/user/lessonsbycourse/${courseId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -23,7 +25,10 @@ const InvoiceTable = () => {
         },
       });
       const data = await response.json();
-      setCourse(data);
+      console.log("lessons:", data)
+      setLessons(data);
+      setPrice(data[0].course.price)
+      setGrade(data[0].grade.name)
     };
     fetchCourse();
   }, [courseId]);
@@ -34,9 +39,28 @@ const InvoiceTable = () => {
 
   const serialNumber = generateRandomNumber();
 
+  const enrollCourse = async () => {
+    const response = await fetch(`${port}/user/subscribe/${courseId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({user_id: user._id, price}),
+    });
+    console.log(response);
+      if (response.ok) {
+        console.log('Course Enrolled successfully');
+        setAlert({ message: 'تم الاشتراك في الكورس بنجاح', type: 'success' });
+        } else {
+        console.log('Failed to add lesson');
+        }
+  };
+
   return (
     <>
     <div className="invoice-table-container">
+    {alert.message && <CustomAlert message={alert.message} type={alert.type} />}
       <h2 className="heading">فاتورة الكورس</h2>
       <p className="sub-heading">{name}</p>
       <table className="invoice-table">
@@ -46,17 +70,17 @@ const InvoiceTable = () => {
             <th>المرحلة</th>
             <th>تاريخ الفاتورة</th>
             <th>سعر الفاتورة</th>
-            <th>سعر الكورس</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>{serialNumber}</td>
-            <td>{course.grade.name}</td>
+            <td>{grade}</td>
             <td>{new Date().toLocaleDateString()}</td>
-            <td>{course.price}</td>
+            <td>{price}</td>
             <td>
-              <button className="pay-button">دفع الفاتورة</button>
+              <button className="pay-button" onClick={enrollCourse}>اشتراك</button>
             </td>
           </tr>
         </tbody>
@@ -64,27 +88,14 @@ const InvoiceTable = () => {
     </div>
       <div className="course-content">
         <h2 className="content-heading">محتوى الكورس</h2>
-        <div className="course-item">
+        {lessons? lessons.map((lesson) => (
+          <div className="course-item">
           <div className="course-title">
-            <span>الأسبوع الأول - الفصل الأول</span>
+            <span>{lesson.title}</span>
             <span className="icon">🔗</span>
           </div>
-          <p className="course-description">التاريخ الإسلامي - الطريق المجد...</p>
         </div>
-        <div className="course-item">
-          <div className="course-title">
-            <span>الأسبوع الثاني - الفصل الأول</span>
-            <span className="icon">🔗</span>
-          </div>
-          <p className="course-description">التاريخ الإسلامي - الفصل الثاني...</p>
-        </div>
-        <div className="course-item">
-          <div className="course-title">
-            <span>الأسبوع الثالث - الفصل الأول</span>
-            <span className="course-content-icon">🔗</span>
-          </div>
-          <p className="course-description">التاريخ الإسلامي - الفصل الثالث...</p>
-        </div>
+        )): null}
       </div>
       </>
   );

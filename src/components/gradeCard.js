@@ -19,6 +19,7 @@ const GradeCard = ({ title, subtitle, Component, color, onClick }) => {
                 </div>
             </div>
         </div>
+        
   );
 };
 

@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Cookies from 'js-cookie';
 import { IoIosReturnLeft } from "react-icons/io";
 import port from '../BackendConfig';
+import ReactPlayer from 'react-player'
 
 function Course() {
     const {courseId} = useParams();
+    const playerRef = useRef(null);
     const [course, setCourse] = useState({});
     const [selectedVideo, setSelectedVideo] = useState('');
     const [selectedPdf, setSelectedPdf] = useState('');
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const toggleSidebar = () => setSidebarVisible(!sidebarVisible);
     
-    const lessons = [
-        { id: 1, isCompleted: true,  title: 'الدرس الأول', videoUrl: 'https://www.youtube.com/embed/Cu3R5it4cQs?si=7DmtHF732cQf7Ibm', pdf_url: 'https://drive.google.com/file/d/1bst6EG7HPnUkjWcjJ6LpsD4mePCGUwq9/view?usp=sharing' },
-        { id: 2, isCompleted: false, title: 'الدرس الثاني', videoUrl: 'https://www.youtube.com/embed/hnK-frJO1X8?si=V1tvZblrjpjO0T_L', pdf_url: 'https://drive.google.com/file/d/1bst6EG7HPnUkjWcjJ6LpsD4mePCGUwq9/view?usp=sharing' },
-        // Add more lessons here
-    ];
+    const [lessons, setLessons] = useState([
+        { id: 0, title: '', video_url: '', pdf_url: '' },
+      ]);
+
     const token = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).token: null;
 
     const getCourse = (courseId) => {
@@ -34,22 +35,46 @@ function Course() {
         .catch(err => console.log(err));
     }
 
-    useEffect(() => {
+    const getLessons = (courseId) => {
+        fetch(`${port}/user/lessonsbycourse/${courseId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+        }})
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+            setLessons(data)
+        })
+        .catch(err => console.log(err));
+    }
+
+  useEffect(() => {
       getCourse(courseId);
+      getLessons(courseId);
       if (lessons.length > 0) {
           setSelectedVideo(lessons[0].videoUrl);
       }
   }, [courseId]);
 
-    const handleLessonClick = (id) => {
-        const lesson = lessons.find(lesson => lesson.id === id);
-        setSelectedVideo(lesson.videoUrl);
-        setSelectedPdf(lesson.pdf_url);
-    };
-    const handleReturn = () => {
-        window.history.back();
-    }
 
+
+  const handleLessonClick = (id) => {
+      const lesson = lessons.find(lesson => lesson.id === id);
+      setSelectedVideo(lesson.video_url);
+      setSelectedPdf(lesson.pdf_url);
+  };
+
+  const handleReturn = () => {
+      window.history.back();
+  };
+
+
+  const myCallback = () => {
+    alert("video ended..")
+    console.log("video ended..")
+  }
 
     return (
         
@@ -85,13 +110,18 @@ function Course() {
                 {selectedVideo ? (
                     <>
                     <div className="action-buttons">
-                    <iframe 
-                        src={selectedVideo} 
-                        className="video-player" 
-                        title="Course Video" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowFullScreen
-                    />
+                    <div id="videoPlayerContainer">
+                    {/* <ReactPlayer playing muted onEnded={myCallback}  width="450px" height="100%" url={selectedVideo} className='video-player' /> */}
+                     <iframe
+                                    id="videoPlayer"
+                                    src={`${selectedVideo}`}
+                                    className="video-player"
+                                    title="Course Video"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    onEnded={myCallback}
+                                />
+                    </div>
                     <Link className="solve-quiz" to={`/quiz/${courseId}`}>حل كويز</Link>
                     <a href={selectedPdf}>
                       <button className="download-file">تحميل الملخص</button>

@@ -1,43 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CourseCard from '../components/CourseCard';
+import Cookies from 'js-cookie';
+import port from '../BackendConfig';
+
 const MyCourses = () => {
-  const courses = [
-    {
-        courseId: '66fca8bdc6fef8711d031b30',
-        courseTitle: 'الكيمياء العضوية',
-        courseLevel: 'الصف الأول الثانوي',
-        quizzes: 5,
-        videos: 5,
-        imageUrl: 'https://i.ibb.co/qgH7Bxq/chemisty-lessons.jpg',
-        status: 'watched',
-    },
-    {
-        courseId: '266ff23ecc3986829b55512a4',
-        courseTitle: 'الكيمياء العضوية',
-        courseLevel: 'الصف الأول الثانوي',
-        quizzes: 5,
-        videos: 5,
-        imageUrl: 'https://i.ibb.co/x6rgLWs/science.png',
-        status: 'not-watched',
-    },
-    // Add more courses here
-  ];
+  const [courses, setCourses] = useState([])
+  const user = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).user: null;
+  const isAuthenticated = user? true: false;
+  const token = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).token: null;
+  const userId = user._id;
+
+  useEffect(() => {
+    fetch(`${port}/user/mycourses/${userId}`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      }
+  })
+      .then(res => res.json())
+      .then(data => {
+        setCourses(data);
+        console.log(data)
+      })
+      .catch(err => console.log(err));
+  }, [userId])
 
   return (
     <div>
       <h2 className='font-bold text-3xl mt-4 mb-4'>كورساتي</h2>
-      {courses.map((course, index) => (
+      {courses? courses.map((course, index) => (
         <CourseCard
           key={index}
-          courseId={course.courseId}
-          courseTitle={course.courseTitle}
-          courseLevel={course.courseLevel}
-          quizzes={course.quizzes}
-          videos={course.videos}
-          imageUrl={course.imageUrl}
-          status={course.status}
+          courseId={course._id}
+          courseTitle={course.name}
+          quizzes={course.numOfQuizzes}
+          videos={course.numOfVideos}
+          imageUrl={course.imgURL}
         />
-      ))}
+      )): null}
     </div>
   );
 };

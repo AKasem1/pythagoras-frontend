@@ -8,9 +8,10 @@ import { IoMdWallet } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
 import {useDispatch} from 'react-redux';
 import { logout } from '../features/authSlice';
+import { useSelector } from 'react-redux';
 
 export const Navbar = () => {
-  const user = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).user: null;
+  const user = useSelector((state) => state.auth.user);
   const isAuthenticated = user? true: false;
   const location = useLocation();
   const dropdownRef = useRef(null);

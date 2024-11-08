@@ -1,19 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const CourseCard = ({courseId, courseTitle, courseLevel, quizzes, videos, imageUrl, status }) => {
+const CourseCard = ({courseId, courseTitle, quizzes, videos, imageUrl }) => {
   return (
     <div className="courseCard-container">
       <div className="courseCard-content">
         <img src={imageUrl} alt={courseTitle} className="courseCard-image" />
         <div className="courseCard-details">
           <h3 className="courseCard-title">{courseTitle}</h3>
-          <p className="courseCard-level">{courseLevel}</p>
-          <p className="courseCard-status">
+          {/* <p className="courseCard-level">{courseLevel}</p> */}
+          {/* <p className="courseCard-status">
             <span className={status === 'watched' ? 'courseCard-statusIcon watched' : 'courseCard-statusIcon not-watched'}>
               {status === 'watched' ? 'تم المشاهدة' : 'لم تتم المشاهدة'}
             </span>
-          </p>
+          </p> */}
         </div>
       </div>
       <div className="courseCard-meta">
