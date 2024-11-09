@@ -8,6 +8,8 @@ import PricingPackage from '../components/PricingPackage';
 import GradeCard from '../components/gradeCard';
 import { PiNumberCircleFourFill, PiNumberCircleFiveFill, PiNumberCircleSixFill } from "react-icons/pi";
 import Features from '../components/Features';
+import {motion} from 'framer-motion';
+import { fadeIn } from '../variants';
 
 export const Home = () => {
   const userData = Cookies.get('auth');
@@ -96,6 +98,12 @@ const getCourses = async (value) => {
 
   return (
     <div className="landing-page">
+      <motion.div
+      variants={fadeIn("up", 0.2)}
+      initial="hidden"
+      whileInView={"show"}
+      viewport={{once: false, amount: 0.7}}
+      >
       <Element name="home" className="home-section">
         <div className="home-content">
           <h1 className='font-bold'>منصة فيثاغورث التعليمية</h1>
@@ -120,7 +128,15 @@ const getCourses = async (value) => {
           <img src={img} alt="Digital Agency" />
         </div>
       </Element>
+
+      </motion.div>
       <div className="separator"></div>
+      <motion.div
+      variants={fadeIn("left", 0.3)}
+      initial="hidden"
+      whileInView={"show"}
+      viewport={{once: false, amount: 0.7}}
+      >
       <Element name="grades" className="section">
         <h2 className='font-bold'>المراحل التعليمية</h2>
         <div className="card-container">
@@ -136,7 +152,10 @@ const getCourses = async (value) => {
       ))}
     </div>
       </Element>
+      </motion.div>
+      
       <Features />
+      
       <Element name="pricing" className="section">
       <br />
         <h2 className='font-bold'>الكورسات</h2>

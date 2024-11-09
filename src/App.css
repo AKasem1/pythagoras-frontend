@@ -2348,7 +2348,7 @@ input[type="file"]::file-selector-button:active {
   align-items: center;
   background-color: #037a8a;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   height: 300px;
   width: 100%;
 }
