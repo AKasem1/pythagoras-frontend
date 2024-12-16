@@ -71,21 +71,21 @@ const getCourses = async (value) => {
         title: 'الصف الأول الثانوي',
         subtitle: 'حكومي - لغات',
         description: '06',
-        Component: "https://i.ibb.co/G21Fj8x/1sec.jpg",
+        Component: "https://i.ibb.co/TYqdHPJ/1sec.jpg",
         color: '#003153'
       },
       {
           title: 'الصف الثاني الثانوي',
           subtitle: 'حكومي - لغات',
           description: '06',
-          Component: "https://i.ibb.co/BNmVGGF/2sec.jpg",
+          Component: "https://i.ibb.co/B4nHCtB/2sec.jpg",
           color: '#003153'
         },
         {
           title: 'الصف الثالث الإعدادي',
           subtitle: 'حكومي - لغات',
           description: '05',
-          Component: "https://i.ibb.co/Dfsyx1W/3prep.jpg",
+          Component: "https://i.ibb.co/N3GWtWy/3prep.jpg",
           color: '#E97451'
         },
     ];
