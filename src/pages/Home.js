@@ -1,5 +1,6 @@
 import React, { Component, useEffect, useState } from 'react'
 import { Link as ScrollLink } from 'react-scroll';
+import { useSelector } from 'react-redux';
 import port from '../BackendConfig';
 import { Element } from 'react-scroll';
 import img from '../teacher.png';
@@ -10,14 +11,23 @@ import { PiNumberCircleFourFill, PiNumberCircleFiveFill, PiNumberCircleSixFill }
 import Features from '../components/Features';
 import {motion} from 'framer-motion';
 import { fadeIn } from '../variants';
+import Wallet from '../components/Wallet';
 
 export const Home = () => {
   const userData = Cookies.get('auth');
+  const user = useSelector((state) => state.auth.user);
+  const isAuthenticated = user? true: false;
+  const token = useSelector((state) => state.auth.token);
   const [show, setShow] = useState(false);
   const [grades, setGrades] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [isWalletOpen, setWalletOpen] = useState(false);
   // console.log(userData);
   // console.log(JSON.parse(userData).user.role);
+
+  const openWallet = () => setWalletOpen(true);
+  const closeWallet = () => setWalletOpen(false);
+
  useEffect(() => {
     setTimeout(() => {
       setShow(true);
@@ -98,6 +108,7 @@ const getCourses = async (value) => {
 
   return (
     <div className="landing-page">
+      <Wallet isOpen={isWalletOpen} onClose={closeWallet} />
       <motion.div
       variants={fadeIn("up", 0.2)}
       initial="hidden"

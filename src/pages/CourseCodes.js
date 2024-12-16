@@ -8,6 +8,8 @@ const CourseCodes = () => {
   const [codes, setCodes] = useState([]);
   const [grades, setGrades] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [numberOfCodes, setNumberOfCodes] = useState(0)
+  const [courseId, setCourseId] = useState('')
   const [formValues, setFormValues] = useState({ grade_id: '', course_id: '', status: ''});
   const [searchValues, setSearchValues] = useState({ gradeId: '', courseId: '', codeStatus: ''});
   const [alert, setAlert] = useState({ message: '', type: '' });
@@ -30,17 +32,35 @@ const CourseCodes = () => {
   }, [token]);
 
 
-  const handleGenerateCodes = (e) => {
+  const handleGenerateCodes = async (e) => {
     e.preventDefault();
-    const response = 0;
-    if (response.ok) {
-        console.log('Lesson added successfully');
+    const formData = {numberOfCodes, courseId}
+    console.log("FORM DATA: ", formData)
+    try {
+      const response = await fetch(`${port}/admin/generatecodes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
         setAlert({ message: 'تم توليد الأكواد بنجاح', type: 'success' });
         } else {
             setAlert({ message: 'حدث خطأ أثناء توليد الأكواد', type: 'error' });
         }
-    
-  };
+
+      const data = await response.json();
+      console.log("data: ", data)
+
+    }
+    catch (error) {
+      console.error(error.message);
+      setAlert({ message: error.message, type: 'error' });
+    }
+  }
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -86,6 +106,12 @@ const CourseCodes = () => {
     setFormValues({ ...formValues, [name]: value });
     if (name === 'grade_id') {
       getCourses(value);
+    }
+    if(name === 'numberOfCodes'){
+      setNumberOfCodes(value)
+    }
+    else if(name === 'courseId'){
+      setCourseId(value)
     }
   };
   const handleFilterChange = (e) => {
@@ -155,8 +181,8 @@ const CourseCodes = () => {
             <label htmlFor="course">الكورس</label>
             <select
             className="dropdown"
-            name="course_id"
-            value={formValues.courseName}
+            name="courseId"
+            value={courseId}
             onChange={handleInputChange}
             required
           >
@@ -170,8 +196,8 @@ const CourseCodes = () => {
             <label htmlFor="numberOfCodes">عدد الأكواد</label>
             <input 
             type="number" 
-            name="status"
-            value={formValues.status}
+            name="numberOfCodes"
+            value={numberOfCodes}
             onChange={handleInputChange}
             required
             className="input-field" />
