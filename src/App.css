@@ -2333,6 +2333,42 @@ input[type="file"]::file-selector-button:active {
   color: #ff4500;
 }
 
+@media (max-width: 480px) {
+  .invoice-table-container {
+    padding: 10px;
+  }
+
+  .heading {
+    font-size: 1.4rem;
+  }
+
+  .sub-heading {
+    font-size: 0.9rem;
+  }
+
+  .invoice-table {
+    font-size: 0.8rem;
+  }
+
+  .pay-button {
+    font-size: 0.8rem;
+    padding: 6px 8px;
+  }
+
+  .content-heading {
+    font-size: 1.4rem;
+  }
+
+  .course-item {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .course-title {
+    font-size: 1rem;
+  }
+}
+
 .custom-element {
   display: flex;
   align-items: center;

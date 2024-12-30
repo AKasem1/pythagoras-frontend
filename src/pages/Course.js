@@ -15,7 +15,7 @@ function Course() {
     const toggleSidebar = () => setSidebarVisible(!sidebarVisible);
     
     const [lessons, setLessons] = useState([
-        { id: 0, title: '', video_url: '', pdf_url: '' },
+        { _id: 0, title: '', video_url: '', pdf_url: '' },
       ]);
 
     const token = Cookies.get('auth')? JSON.parse(Cookies.get('auth')).token: null;
@@ -61,7 +61,9 @@ function Course() {
 
 
   const handleLessonClick = (id) => {
-      const lesson = lessons.find(lesson => lesson.id === id);
+    // console.log("clicked on lesson id: ", id)
+      const lesson = lessons.find(lesson => lesson._id === id);
+      // console.log("clicked on lesson: ", lesson)
       setSelectedVideo(lesson.video_url);
       setSelectedPdf(lesson.pdf_url);
   };
@@ -90,11 +92,11 @@ function Course() {
         <nav className="nav">
           <ul>
             {lessons.map((lesson) => (
-              <li key={lesson.id} 
+              <li key={lesson._id} 
               className={`lesson-item 
-              ${lesson.videoUrl === selectedVideo ? 'active' : ''} 
+              ${lesson.video_url === selectedVideo ? 'active' : ''} 
               ${lesson.isCompleted ? 'completed' : ''}`}>
-                <a href="#" onClick={() => handleLessonClick(lesson.id)}>
+                <a href="#" onClick={() => handleLessonClick(lesson._id)}>
                   {lesson.title}
                 </a>
               </li>

@@ -29,7 +29,7 @@ const MyCourses = () => {
   return (
     <div>
       <h2 className='font-bold text-3xl mt-4 mb-4'>كورساتي</h2>
-      {courses? courses.map((course, index) => (
+      {courses.length > 0 ? courses.map((course, index) => (
         <CourseCard
           key={index}
           courseId={course._id}

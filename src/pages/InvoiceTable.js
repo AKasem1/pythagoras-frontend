@@ -88,7 +88,7 @@ const InvoiceTable = () => {
     </div>
       <div className="course-content">
         <h2 className="content-heading">محتوى الكورس</h2>
-        {lessons? lessons.map((lesson) => (
+        {lessons.length > 0 ? lessons.map((lesson) => (
           <div className="course-item">
           <div className="course-title">
             <span>{lesson.title}</span>
